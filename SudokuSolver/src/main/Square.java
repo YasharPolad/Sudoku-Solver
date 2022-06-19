@@ -11,7 +11,7 @@ package main;
 public class Square {
     
     public char value;
-    public char[] possibleValues = {'1', '2', '3', '4', '5', '6', '7', '8', '9'};
+    public char[] possibleValues;
     public Sudoku sudoku;
     int row;
     int column;
@@ -23,6 +23,7 @@ public class Square {
         this.row = row;
         this.column = column;
         this.sudoku = sudoku;
+//        this.cleanPossibleNumbers();
         
         
     }
@@ -69,6 +70,9 @@ public class Square {
         }
         
     }
+    
+    //*************************************************Value by NECESSITY***************************************************
+
 
     
     

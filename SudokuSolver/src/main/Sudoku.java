@@ -10,6 +10,7 @@ package main;
  */
 public class Sudoku {
     
+    int count = 0;
     Square[][] board;
     int size;
     
@@ -21,7 +22,7 @@ public class Sudoku {
         
     }
     
-    private void populate(char[][] board){  // populate the board with square objects. They hold the values of board. But they will also hold expected values 
+    public void populate(char[][] board){  // populate the board with square objects. They hold the values of board. But they will also hold expected values 
                                             //and other cool things! :) Square also holds the whole sudoku object as a property, as its methods determining 
         for(int i = 0; i < this.board.length; i++){             //its possible values depends on the state of the whole sudoku
             for(int j = 0; j < this.board.length; j++){
@@ -71,18 +72,17 @@ public class Sudoku {
     }
     
     
-    //*************************************************Value by NECESSITY***************************************************
-    
-    
-    
+        
     public void Solve(){
         for(int i = 0; i < this.board.length; i++){
             for(int j = 0; j < this.board.length; j++){
                 Square square = this.board[i][j];
                 if(square.value == '.'){    //if it is an empty square and there can only be one possible number
+                    square.cleanPossibleNumbers();
                     if(square.possibleValues.length == 1){
                         
                         square.value = square.possibleValues[0];
+                        this.count += 1;
                         this.Solve();
                     }
                 }
