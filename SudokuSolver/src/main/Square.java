@@ -4,6 +4,8 @@
  */
 package main;
 
+import java.util.Arrays;
+
 /**
  *
  * @author yashar
@@ -11,7 +13,7 @@ package main;
 public class Square {
     
     public char value;
-    public char[] possibleValues;
+    public char[] possibleValues = {'1', '2', '3', '4', '5', '6', '7', '8', '9'}; 
     public Sudoku sudoku;
     int row;
     int column;
@@ -23,6 +25,7 @@ public class Square {
         this.row = row;
         this.column = column;
         this.sudoku = sudoku;
+        
 //        this.cleanPossibleNumbers();
         
         
@@ -38,7 +41,7 @@ public class Square {
         Square[] rowArray = this.sudoku.getRow(row);
         Square[] columnArray = this.sudoku.getColumn(column);
         Square[] boxArray = this.sudoku.getBox(row, column);
-        char[] allNumbers = {'1', '2', '3', '4', '5', '6', '7', '8', '9'};
+        char[] allNumbers = Arrays.copyOf(this.sudoku.allNumbers, this.sudoku.allNumbers.length);
         
         for(int i = 0; i < rowArray.length; i++){  //This gives me an array like {'1', '.', '.', '4', '5', '.', '.', '.', '9'}
             for(int j = 0; j < allNumbers.length; j++){
@@ -72,8 +75,16 @@ public class Square {
     }
     
     //*************************************************Value by NECESSITY***************************************************
-
-
+    
+    
+    public boolean isValuePossible(char value){ //determins whether a given char value is in the list of the possible values of the Square object
+        for(int i = 0; i < this.possibleValues.length; i++){
+            if(value == this.possibleValues[i]){
+                return true;
+            }
+        }
+        return false;
+    }
     
     
     
