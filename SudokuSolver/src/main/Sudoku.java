@@ -10,27 +10,48 @@ package main;
  */
 public class Sudoku {
     
+    Square[][] board;
+    int size;
     
-    public static char[] getRow(char[][] board, int row){
+    public Sudoku(char[][] board) {
         
-        return board[row];
+        this.board = new Square[board.length][board.length]; //Initialize the sudoku to an empty array of the size of board. We will fill it with objects of Square! :)
+        this.size = board.length;
+        this.populate(board);
         
     }
     
-    public static char[] getColumn(char[][] board, int column){
+    private void populate(char[][] board){  // populate the board with square objects. They hold the values of board. But they will also hold expected values 
+                                            //and other cool things! :) Square also holds the whole sudoku object as a property, as its methods determining 
+        for(int i = 0; i < this.board.length; i++){             //its possible values depends on the state of the whole sudoku
+            for(int j = 0; j < this.board.length; j++){
+                this.board[i][j] = new Square(board[i][j], i, j, this);
+            }
+        }
         
-        char[] columnChars = new char[9];
-        for(int row = 0; row < board.length; row++){
-            columnChars[row] = board[row][column];
+    }
+    
+    
+    public Square[] getRow(int row){
+        
+        return this.board[row];
+        
+    }
+    
+    public Square[] getColumn(int column){
+        
+        Square[] columnChars = new Square[this.board.length];
+        for(int row = 0; row < this.board.length; row++){
+            columnChars[row] = this.board[row][column];
         }
         
         return columnChars;
         
     }
     
-    public static char[] getBox(char[][] board, int row, int column){
+    public Square[] getBox(int row, int column){
         
-        char[] box = new char[9];
+        Square[] box = new Square[9];
         
         int startRow = 3 * (row/3);
         int endRow = startRow + 3;
@@ -40,7 +61,7 @@ public class Sudoku {
         
         for(int i = startRow; i < endRow; i++){
             for(int j = startColumn; j < endColumn; j++){
-                box[count] = board[i][j];
+                box[count] = this.board[i][j];
                 ++count;
             }
             
@@ -49,65 +70,33 @@ public class Sudoku {
         
     }
     
-    public static char[] possibleNumbers(char[][] board, int row, int column){
-        
-        char[] rowArray = getRow(board, row);
-        char[] columnArray = getColumn(board, column);
-        char[] boxArray = getBox(board, row, column);
-        char[] allNumbers = {'1', '2', '3', '4', '5', '6', '7', '8', '9'};
-        
-        for(int i = 0; i < rowArray.length; i++){  //This gives me an array like {'1', '.', '.', '4', '5', '.', '.', '.', '9'}
-            for(int j = 0; j < allNumbers.length; j++){
-                if(rowArray[i] == allNumbers[j] || columnArray[i] == allNumbers[j] || boxArray[i] == allNumbers[j]){
-                    allNumbers[j] = '.';
-                }
-            }
-        }
-        
-        return allNumbers;
-    }
     
-        
-    public static char[] cleanPossibleNumbers(char[][] board, int row, int column){
-        
-        char[] allNumbers = possibleNumbers(board, row, column);
-        int size = 0;   
-        
-        for(int i = 0; i < allNumbers.length; i++){ //This gives me the number of actual digits (4 in this case)
-            if(allNumbers[i] != '.')    size += 1;
-        }
-        
-        int count = 0; 
-        char[] possibleNumbers = new char[size];  //New array of the size of the number of actual digits (4 in this case)
-        for(int i = 0; i < allNumbers.length; i++){ //This gives me an array like {'1', '4', '5', '9'}
-            if(allNumbers[i] != '.'){
-                possibleNumbers[count] = allNumbers[i];
-                ++count;
-            }
-        }
-        
-        return possibleNumbers;
-        
-    }
+    //*************************************************Value by NECESSITY***************************************************
     
-    public static char[][] sudokuSolver(char[][] board){
-        for(int i = 0; i < board.length; i++){
-            for(int j = 0; j < board[0].length; j++){
-                if(board[i][j] == '.'){    //if it is an empty square and there can only be one possible number
-                    if(cleanPossibleNumbers(board, i, j).length == 1){
+    
+    
+    public void Solve(){
+        for(int i = 0; i < this.board.length; i++){
+            for(int j = 0; j < this.board.length; j++){
+                Square square = this.board[i][j];
+                if(square.value == '.'){    //if it is an empty square and there can only be one possible number
+                    if(square.possibleValues.length == 1){
                         
-                        board[i][j] = cleanPossibleNumbers(board, i, j)[0];
-                        board = sudokuSolver(board);
+                        square.value = square.possibleValues[0];
+                        this.Solve();
                     }
                 }
             }
         }
-        return board;
+        
     }
     
-    public static void showBoard(char[][] board){
-        for(int i = 0; i < board.length; i++){
-            System.out.println(board[i]);
+    public void showBoard(){
+        for(int i = 0; i < this.board.length; i++){
+            for(int j = 0; j < this.board.length; j++){
+                System.out.print(this.board[i][j].value);
+            }
+            System.out.println("\n");
         }
     }
     
