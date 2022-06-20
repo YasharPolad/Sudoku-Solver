@@ -23,6 +23,7 @@ public class Sudoku {
         this.size = board.length;
         this.allNumbers = this.allNumbers();
         this.populate(board);
+        //char[27][] missingValues -> A list of all the missingValues of the sudoku. 9 for rows, columns, and boxes. Have them checked and updated at each state of the board
         
     }
     
@@ -85,6 +86,7 @@ public class Sudoku {
         
     }
     
+    //*********************************************************************************************************************************************************
     
     public char[] missingValues(Square[] arr){ // Given an array (this will be either the row, column, or box array),
                                                //return the missing values.
@@ -119,52 +121,44 @@ public class Sudoku {
     }
     
     
-    public int indexOfSquareContainingValue(char value, Square[] arr){
-        for(int i = 0; i < arr.length; i++){
-            for(int j = 0; j < arr[i].possibleValues.length; j++){
-                if(arr[i].possibleValues[j] == value){
-                    return i;
-                }
-            }
-        }
-        return 10;
-    }
+//    public int indexOfSquareContainingValue(char value, Square[] arr){
+//        for(int i = 0; i < arr.length; i++){
+//            for(int j = 0; j < arr[i].possibleValues.length; j++){
+//                if(arr[i].possibleValues[j] == value){
+//                    return i;
+//                }
+//            }
+//        }
+//        return 10;
+//    }
     
     
-    
+    //***************************************************************************************************************************************
         
-    public void SolveByElimination(){
+    public void Solve(){
         for(int i = 0; i < this.board.length; i++){
             for(int j = 0; j < this.board.length; j++){
                 Square square = this.board[i][j];
-                if(square.value == '.'){    //if it is an empty square and there can only be one possible number
-                    square.cleanPossibleNumbers();
-                    if(square.possibleValues.length == 1){ //then the value of that square must be that single possible number
+                if(square.value == '.'){    
+                    square.cleanPossibleNumbers();          //when my possibleValues change, only my row, column, and box are affected. This doesn't change their possible values,
+                                                           //only changes whether they now might be the only one that holds a missing value from that row, column, or box as their possible value.
+                                                            //But when a square gains a value, it actually changes the possible values in the row, column, and box, which propogate to the whole grid
+                                                            //regarding the value by necessity
+                    if(square.possibleValues.length == 1){ //if it is an empty square and there can only be one possible number, then the value of that square must be that single possible number
                         
                         square.value = square.possibleValues[0];
                         square.possibleValues = new char[0]; // Reset the possible values of the square to an empty array
                         this.count += 1;
-                        this.SolveByElimination();
+                        this.Solve();
                     } else {
-                        this.SolveByNecessity();
+                        square.isValuePossibleOnlyForMe();
                     }
                 }
             }
         }
         
     }
-    
-    public void SolveByNecessity(){
-        for(int i = 0; i < this.size; i++){
-            for(int j = 0; j < this.missingValues(this.getRow(i)).length; j++){
-                if(this.valuePossibleOnlyForOneSquare(this.missingValues(this.getRow(i))[j], this.getRow(i))){
-                    int squareIndex = this.indexOfSquareContainingValue(this.missingValues(this.getRow(i))[j], this.getRow(i));
-                    this.board[i][squareIndex].value = this.missingValues(this.getRow(i))[j];
-                    this.board[i][squareIndex].possibleValues = new char[0];
-                }
-            }
-        }
-    }
+
     
     public void showBoard(){
         for(int i = 0; i < this.board.length; i++){

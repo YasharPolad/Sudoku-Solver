@@ -13,7 +13,7 @@ import java.util.Arrays;
 public class Square {
     
     public char value;
-    public char[] possibleValues = {'1', '2', '3', '4', '5', '6', '7', '8', '9'}; 
+    public char[] possibleValues = {}; 
     public Sudoku sudoku;
     int row;
     int column;
@@ -84,6 +84,20 @@ public class Square {
             }
         }
         return false;
+    }
+    
+    public void isValuePossibleOnlyForMe(){ //check if this is the only square that has the missingValues of either its row, column, or box in its possibleValues. If yes, then whether because of the row, column, or box, this square's value must be that number.
+        for(int i = 0; i < this.possibleValues.length; i++){
+            char value = this.possibleValues[i];
+            Square[] row = this.sudoku.getRow(this.row);
+            Square[] column = this.sudoku.getColumn(this.column);
+            Square[] box = this.sudoku.getBox(this.row, this.column);
+            
+            if(this.sudoku.valuePossibleOnlyForOneSquare(value, row) == true || this.sudoku.valuePossibleOnlyForOneSquare(value, column) == true || this.sudoku.valuePossibleOnlyForOneSquare(value, box) == true){
+                this.value = value;
+            }
+        }
+    
     }
     
     
