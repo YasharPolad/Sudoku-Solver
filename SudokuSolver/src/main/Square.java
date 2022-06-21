@@ -86,7 +86,7 @@ public class Square {
         return false;
     }
     
-    public void isValuePossibleOnlyForMe(){ //check if this is the only square that has the missingValues of either its row, column, or box in its possibleValues. If yes, then whether because of the row, column, or box, this square's value must be that number.
+    public boolean isValuePossibleOnlyForMe(){ //check if this is the only square that has the missingValues of either its row, column, or box in its possibleValues. If yes, then whether because of the row, column, or box, this square's value must be that number.
         for(int i = 0; i < this.possibleValues.length; i++){
             char value = this.possibleValues[i];
             Square[] row = this.sudoku.getRow(this.row);
@@ -95,8 +95,12 @@ public class Square {
             
             if(this.sudoku.valuePossibleOnlyForOneSquare(value, row) == true || this.sudoku.valuePossibleOnlyForOneSquare(value, column) == true || this.sudoku.valuePossibleOnlyForOneSquare(value, box) == true){
                 this.value = value;
+                this.possibleValues = new char[0];
+                return true;
             }
+            
         }
+        return false;
     
     }
     
