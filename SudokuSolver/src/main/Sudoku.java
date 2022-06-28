@@ -161,19 +161,16 @@ public class Sudoku {
                         square.value = square.possibleValues[0];
                         square.possibleValues = new char[0]; // Reset the possible values of the square to an empty array
                         this.count += 1;
-//                        this.Solve();
-                        this.InitializePossibleNumbers();
+                        this.Solve();
                     } 
                     else if (square.isValuePossibleOnlyForMe() == true) {
                         this.count2 += 1;
-//                        this.Solve();
-                        this.InitializePossibleNumbers();
+                        this.Solve();
                     }
 
                 }
             }
-        } 
-        if(this.completionPercent() != 1.0) this.Solve();
+        }      
     }
 
     public void showBoard() {
